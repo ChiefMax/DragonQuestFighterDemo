@@ -1,5 +1,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include "main.h"
+#include "fightScreen.h"
 
 int main() {
 
@@ -14,7 +16,7 @@ int main() {
 	sf::Texture playT;
 	sf::Texture eraseT;
 	sf::Texture quitT;
-	if (!texture.loadFromFile("img/backgroundMainMenu.jpg"))
+	if (!texture.loadFromFile("img/backgroundMainMenu.png"))
 		return EXIT_FAILURE;
 	if (!playT.loadFromFile("img/buttonStart.png"))
 		return EXIT_FAILURE;
@@ -76,26 +78,32 @@ int main() {
 
 		if (battleWindowOpen && once) 
 		{
-			//Hadouken!
-			sf::RenderWindow battleWindow(sf::VideoMode(1280, 720), "Fight!");
-			while (battleWindow.isOpen())
-			{
-				sf::Event evnt;
-				while (battleWindow.pollEvent(evnt))
-				{
-					switch (evnt.type)
-					{
-					case sf::Event::Closed:battleWindow.close(); 
-						break;
-					default:
-						break;
-					}
-				}
-				battleWindow.clear();
-				battleWindow.draw(shape);
-				battleWindow.display();
-			}
+			//FightWindow(shape);
+			int mF = OpenFightWindow();
 			once = false;
 		}
 	}
 }
+
+//void FightWindow(sf::CircleShape &shape)
+//{
+//	//Hadouken!
+//	sf::RenderWindow battleWindow(sf::VideoMode(1280, 720), "Fight!");
+//	while (battleWindow.isOpen())
+//	{
+//		sf::Event evnt;
+//		while (battleWindow.pollEvent(evnt))
+//		{
+//			switch (evnt.type)
+//			{
+//			case sf::Event::Closed:battleWindow.close();
+//				break;
+//			default:
+//				break;
+//			}
+//		}
+//		battleWindow.clear();
+//		battleWindow.draw(shape);
+//		battleWindow.display();
+//	}
+//}
