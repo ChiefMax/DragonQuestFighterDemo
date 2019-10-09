@@ -30,11 +30,28 @@ int OpenFightWindow()
 	sf::RectangleShape rectangeleWitsEnemy(sf::Vector2f(25.f, 50.f));
 	rectangeleWitsEnemy.setFillColor(sf::Color(0, 0, 255));
 
+	sf::RectangleShape rectangeleHealth(sf::Vector2f(200.f, 25.f));
+	rectangeleHealth.setFillColor(sf::Color(255, 0, 0));
+
+	sf::RectangleShape rectangeleMana(sf::Vector2f(200.f, 25.f));
+	rectangeleMana.setFillColor(sf::Color(0, 0, 255));
+
+	sf::RectangleShape rectangeleHealthEnemy(sf::Vector2f(200.f, 25.f));
+	rectangeleHealthEnemy.setFillColor(sf::Color(255, 0, 0));
+
+	sf::RectangleShape rectangeleManaEnemy(sf::Vector2f(200.f, 25.f));
+	rectangeleManaEnemy.setFillColor(sf::Color(0, 0, 255));
+
 	sf::Texture texture;
 	sf::Texture player;
 	sf::Texture enemy;
 	sf::Texture headP;
 	sf::Texture headE;
+	sf::Texture attackT;
+	sf::Texture prepareT;
+	sf::Texture recoverT;
+	sf::Texture castmagicT;
+	sf::Texture quitT;
 
 	if (!texture.loadFromFile("img/background.jpg"))
 		return EXIT_FAILURE;
@@ -55,17 +72,25 @@ int OpenFightWindow()
 	sf::Sprite headPS(headP);
 	headPS.setPosition(100,50);
 	sf::Sprite headES(headE);
-	headES.setPosition(1100, 50);
+	headES.setPosition(1000, 50);
 
 	//Player Stats
-	rectangeleStrength.setPosition(105, 180);
-	rectangeleAgilty.setPosition(145, 180);
-	rectangeleWits.setPosition(185, 180);
+	rectangeleStrength.setPosition(50, 180);
+	rectangeleAgilty.setPosition(150, 180);
+	rectangeleWits.setPosition(250, 180);
+
+	//Player Heatlh and Mana
+	rectangeleHealth.setPosition(50, 250);
+	rectangeleMana.setPosition(50, 300);
 
 	//Enemy Stats
-	rectangeleStrengthEnemy.setPosition(1100, 180);
-	rectangeleAgiltyEnemy.setPosition(1140, 180);
-	rectangeleWitsEnemy.setPosition(1180, 180);
+	rectangeleStrengthEnemy.setPosition(950, 180);
+	rectangeleAgiltyEnemy.setPosition(1050, 180);
+	rectangeleWitsEnemy.setPosition(1150, 180);
+
+	//Enemy Health and Mana
+	rectangeleHealthEnemy.setPosition(950, 250);
+	rectangeleManaEnemy.setPosition(950, 300);
 
 	while (battleWindow.isOpen())
 	{
@@ -92,6 +117,10 @@ int OpenFightWindow()
 		battleWindow.draw(rectangeleWits);
 		battleWindow.draw(rectangeleAgiltyEnemy);
 		battleWindow.draw(rectangeleWitsEnemy);
+		battleWindow.draw(rectangeleHealth);
+		battleWindow.draw(rectangeleMana);
+		battleWindow.draw(rectangeleHealthEnemy);
+		battleWindow.draw(rectangeleManaEnemy);
 		battleWindow.display();
 	}
 	return 0;
