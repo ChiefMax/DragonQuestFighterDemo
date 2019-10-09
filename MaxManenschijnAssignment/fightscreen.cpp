@@ -18,6 +18,16 @@ int OpenFightWindow()
 	sf::Texture enemy;
 	sf::Texture headP;
 	sf::Texture headE;
+<<<<<<< HEAD
+	sf::Texture attackT;
+	sf::Texture prepareT;
+	sf::Texture recoverT;
+	sf::Texture castmagicT;
+	sf::Texture quitT;
+
+	//Loading Textures.
+=======
+>>>>>>> develop
 	if (!texture.loadFromFile("img/background.jpg"))
 		return EXIT_FAILURE;
 	if (!player.loadFromFile("img/player.png"))
