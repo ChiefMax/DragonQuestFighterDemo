@@ -53,6 +53,7 @@ int OpenFightWindow()
 	sf::Texture castmagicT;
 	sf::Texture quitT;
 
+	//Loading Textures.
 	if (!texture.loadFromFile("img/background.jpg"))
 		return EXIT_FAILURE;
 	if (!player.loadFromFile("img/player.png"))
