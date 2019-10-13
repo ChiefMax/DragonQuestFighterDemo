@@ -126,11 +126,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="fightscreen.cpp" />
+    <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="sceneHandler.cpp" />
+    <ClCompile Include="spriteObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fightScreen.h" />
+    <ClInclude Include="gameObject.hpp" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="scene.h" />
+    <ClInclude Include="sceneHandler.h" />
+    <ClInclude Include="spriteObject.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
