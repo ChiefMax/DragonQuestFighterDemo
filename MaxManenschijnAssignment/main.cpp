@@ -15,6 +15,7 @@ int main() {
 	bool battleWindowOpen = false;
 	bool once = false;
 	int counter = 0;
+	bool fightWindowBool = false;
 
 	sf::RenderWindow ourWindow(sf::VideoMode(1280, 720), "Dronken Quest");
 	Scene scene1("scene01");
@@ -34,10 +35,7 @@ int main() {
 	quitSprite.setPosition(sf::Vector2f(1100.0f, 350.0f));
 	scene1.addGameObject(quitSprite);
 
-	Scene scene2("scene02");
-
-	sf::CircleShape shape(50.f);
-	shape.setFillColor(sf::Color(100, 250, 50));
+	//Button handling.
 	sf::Texture playT;
 	sf::Texture eraseT;
 	sf::Texture quitT;
@@ -48,11 +46,80 @@ int main() {
 	if (!quitT.loadFromFile("img/exit.png"))
 		return EXIT_FAILURE;
 	sf::Sprite play(playT);
-	play.setPosition(sf::Vector2f(1100,150));
+	play.setPosition(sf::Vector2f(1100, 150));
 	sf::Sprite erase(eraseT);
 	erase.setPosition(sf::Vector2f(1100, 250));
 	sf::Sprite quit(quitT);
 	quit.setPosition(sf::Vector2f(1100, 350));
+
+	Scene scene2("scene02");
+
+	/*sf::RectangleShape rectangeleStrength(sf::Vector2f(25.f, 50.f));
+	rectangeleStrength.setFillColor(sf::Color(255, 0, 0));
+
+	sf::RectangleShape rectangeleStrengthEnemy(sf::Vector2f(25.f, 50.f));
+	rectangeleStrengthEnemy.setFillColor(sf::Color(255, 0, 0));
+
+	sf::RectangleShape rectangeleAgilty(sf::Vector2f(25.f, 50.f));
+	rectangeleAgilty.setFillColor(sf::Color(0, 255, 0));
+
+	sf::RectangleShape rectangeleAgiltyEnemy(sf::Vector2f(25.f, 50.f));
+	rectangeleAgiltyEnemy.setFillColor(sf::Color(0, 255, 0));
+
+	sf::RectangleShape rectangeleWits(sf::Vector2f(25.f, 50.f));
+	rectangeleWits.setFillColor(sf::Color(0, 0, 255));
+
+	sf::RectangleShape rectangeleWitsEnemy(sf::Vector2f(25.f, 50.f));
+	rectangeleWitsEnemy.setFillColor(sf::Color(0, 0, 255));
+
+	sf::RectangleShape rectangeleHealth(sf::Vector2f(200.f, 25.f));
+	rectangeleHealth.setFillColor(sf::Color(255, 0, 0));
+
+	sf::RectangleShape rectangeleMana(sf::Vector2f(200.f, 25.f));
+	rectangeleMana.setFillColor(sf::Color(0, 0, 255));
+
+	sf::RectangleShape rectangeleHealthEnemy(sf::Vector2f(200.f, 25.f));
+	rectangeleHealthEnemy.setFillColor(sf::Color(255, 0, 0));
+
+	sf::RectangleShape rectangeleManaEnemy(sf::Vector2f(200.f, 25.f));
+	rectangeleManaEnemy.setFillColor(sf::Color(0, 0, 255));*/
+
+	SpriteObject playerStatsSprite("playerStatsSprite", "img/playerStatsT.png");
+	playerStatsSprite.setPosition(sf::Vector2f(50.0f, 50.0f));
+	scene2.addGameObject(playerStatsSprite);
+
+	SpriteObject enemyStatsSprite("enemyStatsSprite", "img/enemyStatsT.png");
+	enemyStatsSprite.setPosition(sf::Vector2f(950.0f, 50.0f));
+	scene2.addGameObject(enemyStatsSprite);
+
+	SpriteObject playerSprite("playerSprite", "img/player.png");
+	playerSprite.setPosition(sf::Vector2f(450, 200));
+	scene2.addGameObject(playerSprite);
+
+	SpriteObject enemySprite("enemySprite", "img/enemy.png");
+	enemySprite.setPosition(sf::Vector2f(700, 200));
+	scene2.addGameObject(enemySprite);
+
+
+	sf::RectangleShape rectangeleHealth(sf::Vector2f(200.f, 25.f));
+	rectangeleHealth.setFillColor(sf::Color(255, 0, 0));
+
+	sf::RectangleShape rectangeleMana(sf::Vector2f(200.f, 25.f));
+	rectangeleMana.setFillColor(sf::Color(0, 0, 255));
+
+	sf::RectangleShape rectangeleHealthEnemy(sf::Vector2f(200.f, 25.f));
+	rectangeleHealthEnemy.setFillColor(sf::Color(255, 0, 0));
+
+	sf::RectangleShape rectangeleManaEnemy(sf::Vector2f(200.f, 25.f));
+	rectangeleManaEnemy.setFillColor(sf::Color(0, 0, 255));
+
+	//Player Heatlh and Mana
+	rectangeleHealth.setPosition(90, 300);
+	rectangeleMana.setPosition(90, 350);
+
+	//Enemy Health and Mana
+	rectangeleHealthEnemy.setPosition(990, 300);
+	rectangeleManaEnemy.setPosition(990, 350);
 
 	SceneHandler handler;
 	handler.addScene(scene1);
@@ -75,6 +142,7 @@ int main() {
 				// mouse is on sprite!
 				battleWindowOpen = true;
 				once = true;
+				fightWindowBool = true;
 				//counter++;
 			}
 
@@ -90,7 +158,9 @@ int main() {
 		sf::Event evnt;
 		while (ourWindow.pollEvent(evnt))
 		{
-
+			if (evnt.type == sf::Event::Closed) {
+				ourWindow.close();
+			}
 			if (battleWindowOpen && once) {
 				if (counter == 0) {
 					handler.stackScene("scene02");
@@ -101,12 +171,6 @@ int main() {
 					handler.popScene();
 					counter--;
 				}
-				switch (evnt.type)
-				{
-				case sf::Event::Closed:ourWindow.close(); break;
-				default:
-					break;
-				}
 			}
 		}
 		ourWindow.clear();
@@ -115,6 +179,10 @@ int main() {
 		//ourWindow.draw(quit);
 		handler.update();
 		handler.render(ourWindow);
+		if (fightWindowBool) 
+		{
+			DrawHeathAndMana(ourWindow, rectangeleHealth, rectangeleMana, rectangeleHealthEnemy, rectangeleManaEnemy);
+		}
 		ourWindow.display();
 
 		if (battleWindowOpen && once) 
@@ -124,25 +192,10 @@ int main() {
 	}
 }
 
-//void FightWindow(sf::CircleShape &shape)
-//{
-//	//Hadouken!
-//	sf::RenderWindow battleWindow(sf::VideoMode(1280, 720), "Fight!");
-//	while (battleWindow.isOpen())
-//	{
-//		sf::Event evnt;
-//		while (battleWindow.pollEvent(evnt))
-//		{
-//			switch (evnt.type)
-//			{
-//			case sf::Event::Closed:battleWindow.close();
-//				break;
-//			default:
-//				break;
-//			}
-//		}
-//		battleWindow.clear();
-//		battleWindow.draw(shape);
-//		battleWindow.display();
-//	}
-//}
+void DrawHeathAndMana(sf::RenderWindow &ourWindow, sf::RectangleShape &rectangeleHealth, sf::RectangleShape &rectangeleMana, sf::RectangleShape &rectangeleHealthEnemy, sf::RectangleShape &rectangeleManaEnemy)
+{
+	ourWindow.draw(rectangeleHealth);
+	ourWindow.draw(rectangeleMana);
+	ourWindow.draw(rectangeleHealthEnemy);
+	ourWindow.draw(rectangeleManaEnemy);
+}
