@@ -7,6 +7,10 @@
 #include "scene.h"
 #include "spriteObject.hpp"
 #include "sceneHandler.h"
+#include "button.hpp"
+#include "character.hpp"
+#include "textObject.hpp"
+#include "quitButton.hpp"
 #include <string>
 #include <iostream>
 
@@ -16,6 +20,12 @@ int main() {
 	bool once = false;
 	int counter = 0;
 	bool fightWindowBool = false;
+
+	sf::Font font;
+	font.loadFromFile("Lato-Regular.ttf");
+	sf::Color darkColor = sf::Color(71, 82, 94, 255);
+	sf::Color darkGreyColor = sf::Color(132, 146, 166, 255);
+	sf::Color lightGreyColor = sf::Color(129, 144, 165, 255);
 
 	sf::RenderWindow ourWindow(sf::VideoMode(1280, 720), "Dronken Quest");
 	Scene scene1("scene01");
@@ -84,15 +94,22 @@ int main() {
 	sf::RectangleShape rectangeleManaEnemy(sf::Vector2f(200.f, 25.f));
 	rectangeleManaEnemy.setFillColor(sf::Color(0, 0, 255));*/
 
-	SpriteObject playerStatsSprite("playerStatsSprite", "img/playerStatsT.png");
+	Character character("Dude", "img/player.png", 10, 2, 2);
+
+	TextObject hpText("hpText", font, "HP: " + std::to_string(character.getHP()));
+	hpText.setPosition(sf::Vector2f(50, 200));
+	hpText.setCharacterSize(26);
+	hpText.setFillColor(darkColor);
+
+	SpriteObject playerStatsSprite("playerStatsSprite", "img/headP.png");
 	playerStatsSprite.setPosition(sf::Vector2f(50.0f, 50.0f));
 	scene2.addGameObject(playerStatsSprite);
 
-	SpriteObject enemyStatsSprite("enemyStatsSprite", "img/enemyStatsT.png");
+	SpriteObject enemyStatsSprite("enemyStatsSprite", "img/headE.png");
 	enemyStatsSprite.setPosition(sf::Vector2f(950.0f, 50.0f));
 	scene2.addGameObject(enemyStatsSprite);
 
-	SpriteObject playerSprite("playerSprite", "img/player.png");
+	SpriteObject playerSprite("playerSprite", character.getSpriteFile()/*"img/player.png"*/);
 	playerSprite.setPosition(sf::Vector2f(450, 200));
 	scene2.addGameObject(playerSprite);
 
@@ -100,6 +117,32 @@ int main() {
 	enemySprite.setPosition(sf::Vector2f(700, 200));
 	scene2.addGameObject(enemySprite);
 
+	Button attackButton("attackButton", font, "ATTACK", sf::Vector2f(192.5f, 50.0f), darkColor);
+	attackButton.setPosition(sf::Vector2f(150, 500));
+	attackButton.setButtonAction([&character, &hpText]() {
+		int damage = character.attackCharacter(character);
+		character.takeDamage(damage);
+		hpText.setText("HP: " + std::to_string(character.getHP()));
+	});
+
+	Button defenceButton("defenceButton", font, "DEFENCE", sf::Vector2f(192.5f, 50.0f), darkColor);
+	defenceButton.setPosition(sf::Vector2f(350, 500));
+
+	Button recoverButton("recoverButton", font, "RECOVER", sf::Vector2f(192.5f, 50.0f), darkColor);
+	recoverButton.setPosition(sf::Vector2f(750, 500));
+	
+	Button magicButton("magicButton", font, "MAGIC", sf::Vector2f(192.5f, 50.0f), darkColor);
+	magicButton.setPosition(sf::Vector2f(950, 500));
+
+	Button returnMenu("returnMenu", font, "RETURN TO MENU", sf::Vector2f(250.0f, 50.0f), darkColor);
+	returnMenu.setPosition(sf::Vector2f(950, 650));
+
+	scene2.addGameObject(attackButton);
+	scene2.addGameObject(defenceButton);
+	scene2.addGameObject(recoverButton);
+	scene2.addGameObject(magicButton);
+	scene2.addGameObject(returnMenu);
+	scene2.addGameObject(hpText);
 
 	sf::RectangleShape rectangeleHealth(sf::Vector2f(200.f, 25.f));
 	rectangeleHealth.setFillColor(sf::Color(255, 0, 0));
@@ -161,6 +204,10 @@ int main() {
 			if (evnt.type == sf::Event::Closed) {
 				ourWindow.close();
 			}
+			else
+			{
+				scene2.handleEvent(evnt, ourWindow);
+			}
 			if (battleWindowOpen && once) {
 				if (counter == 0) {
 					handler.stackScene("scene02");
@@ -174,15 +221,8 @@ int main() {
 			}
 		}
 		ourWindow.clear();
-		//ourWindow.draw(play);
-		//ourWindow.draw(erase);
-		//ourWindow.draw(quit);
 		handler.update();
 		handler.render(ourWindow);
-		if (fightWindowBool) 
-		{
-			DrawHeathAndMana(ourWindow, rectangeleHealth, rectangeleMana, rectangeleHealthEnemy, rectangeleManaEnemy);
-		}
 		ourWindow.display();
 
 		if (battleWindowOpen && once) 

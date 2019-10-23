@@ -1,4 +1,5 @@
 #include "gameObject.hpp"
+#include "scene.h"
 
 GameObject::GameObject(std::string identifier) : identifier(identifier) { }
  
