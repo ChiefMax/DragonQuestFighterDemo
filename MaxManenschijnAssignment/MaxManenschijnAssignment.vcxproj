@@ -125,20 +125,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\CoolThings\C++Things\characterLoader\character.cpp" />
+    <ClCompile Include="button.cpp" />
     <ClCompile Include="fightscreen.cpp" />
     <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="quitButton.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="sceneHandler.cpp" />
     <ClCompile Include="spriteObject.cpp" />
+    <ClCompile Include="textObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\CoolThings\C++Things\characterLoader\character.hpp" />
+    <ClInclude Include="button.hpp" />
     <ClInclude Include="fightScreen.h" />
     <ClInclude Include="gameObject.hpp" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="quitButton.hpp" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="sceneHandler.h" />
     <ClInclude Include="spriteObject.hpp" />
+    <ClInclude Include="textObject.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
