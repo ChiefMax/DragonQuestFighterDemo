@@ -64,42 +64,46 @@ int main() {
 
 	Scene scene2("scene02");
 
-	/*sf::RectangleShape rectangeleStrength(sf::Vector2f(25.f, 50.f));
-	rectangeleStrength.setFillColor(sf::Color(255, 0, 0));
+	Character character("Player", "img/player.png", 10, 2, 2);
+	Character enemy("Enemy", "img/enemy.png", 8, 2, 4);
 
-	sf::RectangleShape rectangeleStrengthEnemy(sf::Vector2f(25.f, 50.f));
-	rectangeleStrengthEnemy.setFillColor(sf::Color(255, 0, 0));
+	TextObject infoText("infoText", font, " ");
+	infoText.setPosition(sf::Vector2f(400, 400));
+	infoText.setCharacterSize(26);
+	infoText.setFillColor(darkColor);
 
-	sf::RectangleShape rectangeleAgilty(sf::Vector2f(25.f, 50.f));
-	rectangeleAgilty.setFillColor(sf::Color(0, 255, 0));
-
-	sf::RectangleShape rectangeleAgiltyEnemy(sf::Vector2f(25.f, 50.f));
-	rectangeleAgiltyEnemy.setFillColor(sf::Color(0, 255, 0));
-
-	sf::RectangleShape rectangeleWits(sf::Vector2f(25.f, 50.f));
-	rectangeleWits.setFillColor(sf::Color(0, 0, 255));
-
-	sf::RectangleShape rectangeleWitsEnemy(sf::Vector2f(25.f, 50.f));
-	rectangeleWitsEnemy.setFillColor(sf::Color(0, 0, 255));
-
-	sf::RectangleShape rectangeleHealth(sf::Vector2f(200.f, 25.f));
-	rectangeleHealth.setFillColor(sf::Color(255, 0, 0));
-
-	sf::RectangleShape rectangeleMana(sf::Vector2f(200.f, 25.f));
-	rectangeleMana.setFillColor(sf::Color(0, 0, 255));
-
-	sf::RectangleShape rectangeleHealthEnemy(sf::Vector2f(200.f, 25.f));
-	rectangeleHealthEnemy.setFillColor(sf::Color(255, 0, 0));
-
-	sf::RectangleShape rectangeleManaEnemy(sf::Vector2f(200.f, 25.f));
-	rectangeleManaEnemy.setFillColor(sf::Color(0, 0, 255));*/
-
-	Character character("Dude", "img/player.png", 10, 2, 2);
-
+	/*--------Player stats---------*/
 	TextObject hpText("hpText", font, "HP: " + std::to_string(character.getHP()));
 	hpText.setPosition(sf::Vector2f(50, 200));
 	hpText.setCharacterSize(26);
 	hpText.setFillColor(darkColor);
+
+	TextObject defenceText("defenceText", font, "Defence: " + std::to_string(character.getDefense()));
+	defenceText.setPosition(sf::Vector2f(50, 250));
+	defenceText.setCharacterSize(26);
+	defenceText.setFillColor(darkColor);
+
+	TextObject attackText("attackText", font, "Attack: " + std::to_string(character.getAttack()));
+	attackText.setPosition(sf::Vector2f(50, 300));
+	attackText.setCharacterSize(26);
+	attackText.setFillColor(darkColor);
+	/*----------------------------*/
+	/*--------Enemy stats---------*/
+	TextObject hpTextEnemy("hpTextEnemy", font, "HP: " + std::to_string(enemy.getHP()));
+	hpTextEnemy.setPosition(sf::Vector2f(950, 200));
+	hpTextEnemy.setCharacterSize(26);
+	hpTextEnemy.setFillColor(darkColor);
+
+	TextObject defenceTextEnemy("defenceTextEnemy", font, "Defence: " + std::to_string(enemy.getDefense()));
+	defenceTextEnemy.setPosition(sf::Vector2f(950, 250));
+	defenceTextEnemy.setCharacterSize(26);
+	defenceTextEnemy.setFillColor(darkColor);
+
+	TextObject attackTextEnemy("attackTextEnemy", font, "Attack: " + std::to_string(enemy.getAttack()));
+	attackTextEnemy.setPosition(sf::Vector2f(950, 300));
+	attackTextEnemy.setCharacterSize(26);
+	attackTextEnemy.setFillColor(darkColor);
+	/*----------------------------*/
 
 	SpriteObject playerStatsSprite("playerStatsSprite", "img/headP.png");
 	playerStatsSprite.setPosition(sf::Vector2f(50.0f, 50.0f));
@@ -109,30 +113,53 @@ int main() {
 	enemyStatsSprite.setPosition(sf::Vector2f(950.0f, 50.0f));
 	scene2.addGameObject(enemyStatsSprite);
 
-	SpriteObject playerSprite("playerSprite", character.getSpriteFile()/*"img/player.png"*/);
+	SpriteObject playerSprite("playerSprite", character.getSpriteFile());
 	playerSprite.setPosition(sf::Vector2f(450, 200));
 	scene2.addGameObject(playerSprite);
 
-	SpriteObject enemySprite("enemySprite", "img/enemy.png");
+	SpriteObject enemySprite("enemySprite", enemy.getSpriteFile());
 	enemySprite.setPosition(sf::Vector2f(700, 200));
 	scene2.addGameObject(enemySprite);
 
 	Button attackButton("attackButton", font, "ATTACK", sf::Vector2f(192.5f, 50.0f), darkColor);
 	attackButton.setPosition(sf::Vector2f(150, 500));
-	attackButton.setButtonAction([&character, &hpText]() {
-		int damage = character.attackCharacter(character);
-		character.takeDamage(damage);
-		hpText.setText("HP: " + std::to_string(character.getHP()));
+	attackButton.setButtonAction([&character, &enemy, &hpTextEnemy]() {
+		int damage = character.attackCharacter(enemy);
+		enemy.takeDamage(damage);
+		hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
 	});
 
 	Button defenceButton("defenceButton", font, "DEFENCE", sf::Vector2f(192.5f, 50.0f), darkColor);
 	defenceButton.setPosition(sf::Vector2f(350, 500));
+	defenceButton.setButtonAction([&character, &enemy, &infoText]() {
+		infoText.setText(character.getName() + " is bracing for impact.");
+	});
 
 	Button recoverButton("recoverButton", font, "RECOVER", sf::Vector2f(192.5f, 50.0f), darkColor);
 	recoverButton.setPosition(sf::Vector2f(750, 500));
-	
+	recoverButton.setButtonAction([&character, &enemy, &infoText, &hpText]() {
+		infoText.setText(character.getName() + " used a heal spell.");
+		character.setHP(5);
+		hpText.setText("HP: " + std::to_string(character.getHP()));
+	});
+
 	Button magicButton("magicButton", font, "MAGIC", sf::Vector2f(192.5f, 50.0f), darkColor);
 	magicButton.setPosition(sf::Vector2f(950, 500));
+	magicButton.setButtonAction([&character, &enemy, &infoText, &hpTextEnemy]() {
+		int damage = character.attackCharacterWithMagic(enemy);
+		int magicPower = rand() % 10 + 1;
+
+		if (magicPower >= 3) 
+		{
+			infoText.setText(character.getName() + " used a magic spell. It Failed!");
+		}
+		else
+		{
+			enemy.takeDamage(damage);
+			infoText.setText(character.getName() + " used a magic spell. Sizzle Oh NO!");
+			hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
+		}
+	});
 
 	Button returnMenu("returnMenu", font, "RETURN TO MENU", sf::Vector2f(250.0f, 50.0f), darkColor);
 	returnMenu.setPosition(sf::Vector2f(950, 650));
@@ -143,6 +170,12 @@ int main() {
 	scene2.addGameObject(magicButton);
 	scene2.addGameObject(returnMenu);
 	scene2.addGameObject(hpText);
+	scene2.addGameObject(attackText);
+	scene2.addGameObject(defenceText);
+	scene2.addGameObject(hpTextEnemy);
+	scene2.addGameObject(attackTextEnemy);
+	scene2.addGameObject(defenceTextEnemy);
+	scene2.addGameObject(infoText);
 
 	sf::RectangleShape rectangeleHealth(sf::Vector2f(200.f, 25.f));
 	rectangeleHealth.setFillColor(sf::Color(255, 0, 0));
@@ -230,12 +263,4 @@ int main() {
 			once = false;
 		}
 	}
-}
-
-void DrawHeathAndMana(sf::RenderWindow &ourWindow, sf::RectangleShape &rectangeleHealth, sf::RectangleShape &rectangeleMana, sf::RectangleShape &rectangeleHealthEnemy, sf::RectangleShape &rectangeleManaEnemy)
-{
-	ourWindow.draw(rectangeleHealth);
-	ourWindow.draw(rectangeleMana);
-	ourWindow.draw(rectangeleHealthEnemy);
-	ourWindow.draw(rectangeleManaEnemy);
 }
