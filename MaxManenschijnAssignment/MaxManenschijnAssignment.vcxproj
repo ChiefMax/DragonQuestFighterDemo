@@ -125,8 +125,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\CoolThings\C++Things\characterLoader\character.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="character.cpp" />
     <ClCompile Include="fightscreen.cpp" />
     <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="main.cpp" />
@@ -137,8 +137,8 @@
     <ClCompile Include="textObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\CoolThings\C++Things\characterLoader\character.hpp" />
     <ClInclude Include="button.hpp" />
+    <ClInclude Include="character.hpp" />
     <ClInclude Include="fightScreen.h" />
     <ClInclude Include="gameObject.hpp" />
     <ClInclude Include="main.h" />
