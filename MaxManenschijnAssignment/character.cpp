@@ -8,6 +8,8 @@ Character::Character(std::string name, std::string spriteFile, int hp, int attac
 
 Character::~Character() { }
 
+bool Once = false;
+
 int Character::attackCharacter(const Character& character) const {
 	//Just a random function
 
@@ -20,11 +22,11 @@ int Character::attackCharacter(const Character& character) const {
 }
 
 int Character::attackCharacterWithMagic(const Character& character) const {
-	int magic = 0;
+	int magic = 2;
 	//attack + 0~3 
 	int magicPower = rand() % 10 + 1;
 
-	if (magicPower > 3)
+	if (magicPower > 4)
 	{
 		magic = 5;
 	}
@@ -37,11 +39,13 @@ bool Character::takeDamage(int damage) {
 	return hp == 0;
 }
 
-bool Character::takeMagicDamage(int damage) {
-	//if (oncePerFight)
-	//{
-		hp - damage;
-	//}
+bool Character::takeMagicDamage(int damage, bool oncePerFight) {
+	Once = true;
+	if (oncePerFight && Once)
+	{
+		hp -= damage;
+		Once = false;
+	}
 	return hp;
 }
 
