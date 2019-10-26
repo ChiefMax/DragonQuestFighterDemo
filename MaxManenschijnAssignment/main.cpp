@@ -14,7 +14,7 @@ int main() {
 	bool specialMagic = false;
 	bool PlayerTurn = true;
 	bool EnemyTurn = false;
-	bool StartFight = false;
+	bool perButtonClick = false;
 
 	sf::Font font;
 	font.loadFromFile("Lato-Regular.ttf");
@@ -128,16 +128,17 @@ int main() {
 	Button magicButton("magicButton", font, "MAGIC", sf::Vector2f(192.5f, 50.0f), darkColor);
 	magicButton.setPosition(sf::Vector2f(950, 500));
 
-	PlayerHandler(attackButton, character, enemy, hpTextEnemy, defenceButton, infoText, recoverButton, hpText, magicButton, specialMagic, magicOnce, EnemyTurn);
+	//PlayerHandler(attackButton, character, enemy, hpTextEnemy, defenceButton, infoText, recoverButton, hpText, magicButton, specialMagic, magicOnce, EnemyTurn);
 
-	//if (StartFight) {
 	if (PlayerTurn) {
-		attackButton.setButtonAction([&character, &enemy, &hpTextEnemy, &EnemyTurn, &PlayerTurn]() {
+		bool localTurn = false;
+		attackButton.setButtonAction([&character, &enemy, &hpTextEnemy, &EnemyTurn, &PlayerTurn, &localTurn]() {
 			int damage = character.attackCharacter(enemy);
 			enemy.takeDamage(damage);
 			hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
 			EnemyTurn = true;
 			PlayerTurn = false;
+			localTurn = true;
 		});
 
 		defenceButton.setButtonAction([&character, &enemy, &infoText, &EnemyTurn, &PlayerTurn]() {
@@ -178,19 +179,8 @@ int main() {
 				PlayerTurn = false;
 			}
 		});
-		EnemyTurn = true;
 	}
 
-	if (/*EnemyTurn &&*/ !PlayerTurn)
-	{
-		int enemyDamage = 5;/*enemy.attackCharacter(character);*/
-		character.takeDamage(enemyDamage);
-		infoText.setText(enemy.getName() + " just swong at you.");
-		hpText.setText("HP: " + std::to_string(character.getHP()));
-		PlayerTurn = true;
-		//EnemyTurn = false;
-	}
-	//}
 	Button returnMenu("returnMenu", font, "RETURN TO MENU", sf::Vector2f(250.0f, 50.0f), darkColor);
 	returnMenu.setPosition(sf::Vector2f(950, 650));
 
@@ -233,6 +223,16 @@ int main() {
 
 	while (ourWindow.isOpen())
 	{
+		if (EnemyTurn = true && !PlayerTurn)
+		{
+			int enemyDamage =  enemy.attackCharacter(character);
+			character.takeDamage(enemyDamage);
+			infoText.setText(enemy.getName() + " just swong at you.");
+			hpText.setText("HP: " + std::to_string(character.getHP()));
+			PlayerTurn = true;
+			EnemyTurn = false;
+		}
+
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			// transform the mouse position from window coordinates to world coordinates
@@ -275,13 +275,11 @@ int main() {
 				if (counter == 0) {
 					handler.stackScene("scene02");
 					counter++;
-					StartFight = true;
 					ourWindow.clear();
 				}
 				else {
 					handler.popScene();
 					counter--;
-					StartFight = false;
 				}
 			}
 		}
