@@ -18,7 +18,7 @@ public:
 	int attackCharacter(const Character& character) const;
 	int attackCharacterWithMagic(const Character& character) const;
 	bool takeDamage(int damage);
-	bool takeMagicDamage(int damage);
+	bool takeMagicDamage(int damage, bool oncePerFight);
 
 	int getAttack() const;
 	void setAttack(int attack);

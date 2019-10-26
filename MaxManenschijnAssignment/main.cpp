@@ -2,24 +2,19 @@
 #include <SFML/Graphics.hpp>
 
 #include "main.h"
-#include <Windows.h>
-#include "fightScreen.h"
-#include "scene.h"
-#include "spriteObject.hpp"
-#include "sceneHandler.h"
-#include "button.hpp"
-#include "character.hpp"
-#include "textObject.hpp"
-#include "quitButton.hpp"
-#include <string>
-#include <iostream>
+
 
 int main() {
 
 	bool battleWindowOpen = false;
 	bool once = false;
 	int counter = 0;
+	bool magicOnce = false;
 	bool fightWindowBool = false;
+	bool specialMagic = false;
+	bool PlayerTurn = true;
+	bool EnemyTurn = false;
+	bool StartFight = false;
 
 	sf::Font font;
 	font.loadFromFile("Lato-Regular.ttf");
@@ -123,44 +118,79 @@ int main() {
 
 	Button attackButton("attackButton", font, "ATTACK", sf::Vector2f(192.5f, 50.0f), darkColor);
 	attackButton.setPosition(sf::Vector2f(150, 500));
-	attackButton.setButtonAction([&character, &enemy, &hpTextEnemy]() {
-		int damage = character.attackCharacter(enemy);
-		enemy.takeDamage(damage);
-		hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
-	});
 
 	Button defenceButton("defenceButton", font, "DEFENCE", sf::Vector2f(192.5f, 50.0f), darkColor);
 	defenceButton.setPosition(sf::Vector2f(350, 500));
-	defenceButton.setButtonAction([&character, &enemy, &infoText]() {
-		infoText.setText(character.getName() + " is bracing for impact.");
-	});
 
 	Button recoverButton("recoverButton", font, "RECOVER", sf::Vector2f(192.5f, 50.0f), darkColor);
 	recoverButton.setPosition(sf::Vector2f(750, 500));
-	recoverButton.setButtonAction([&character, &enemy, &infoText, &hpText]() {
-		infoText.setText(character.getName() + " used a heal spell.");
-		character.setHP(5);
-		hpText.setText("HP: " + std::to_string(character.getHP()));
-	});
 
 	Button magicButton("magicButton", font, "MAGIC", sf::Vector2f(192.5f, 50.0f), darkColor);
 	magicButton.setPosition(sf::Vector2f(950, 500));
-	magicButton.setButtonAction([&character, &enemy, &infoText, &hpTextEnemy]() {
-		int damage = character.attackCharacterWithMagic(enemy);
-		int magicPower = rand() % 10 + 1;
 
-		if (magicPower >= 3) 
-		{
-			infoText.setText(character.getName() + " used a magic spell. It Failed!");
-		}
-		else
-		{
+	PlayerHandler(attackButton, character, enemy, hpTextEnemy, defenceButton, infoText, recoverButton, hpText, magicButton, specialMagic, magicOnce, EnemyTurn);
+
+	//if (StartFight) {
+	if (PlayerTurn) {
+		attackButton.setButtonAction([&character, &enemy, &hpTextEnemy, &EnemyTurn, &PlayerTurn]() {
+			int damage = character.attackCharacter(enemy);
 			enemy.takeDamage(damage);
-			infoText.setText(character.getName() + " used a magic spell. Sizzle Oh NO!");
 			hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
-		}
-	});
+			EnemyTurn = true;
+			PlayerTurn = false;
+		});
 
+		defenceButton.setButtonAction([&character, &enemy, &infoText, &EnemyTurn, &PlayerTurn]() {
+			infoText.setText(character.getName() + " is bracing for impact.");
+			EnemyTurn = true;
+			PlayerTurn = false;
+		});
+
+		recoverButton.setButtonAction([&character, &enemy, &infoText, &hpText, &EnemyTurn, &PlayerTurn]() {
+			infoText.setText(character.getName() + " used a heal spell.");
+			character.setHP(5);
+			hpText.setText("HP: " + std::to_string(character.getHP()));
+			EnemyTurn = true;
+			PlayerTurn = false;
+		});
+
+		magicButton.setButtonAction([&character, &enemy, &infoText, &hpTextEnemy, &specialMagic, &magicOnce, &EnemyTurn, &PlayerTurn]() {
+			int damage = character.attackCharacterWithMagic(enemy);
+			int magicPower = rand() % 10 + 1;
+
+			if (magicPower >= 3)
+			{
+				infoText.setText(character.getName() + " used a magic spell. It Failed!");
+				EnemyTurn = true;
+				PlayerTurn = false;
+			}
+			else
+			{
+				specialMagic = true;
+				if (specialMagic && !magicOnce) {
+					enemy.takeMagicDamage(damage, specialMagic);
+					specialMagic = false;
+					magicOnce = true;
+				}
+				infoText.setText(character.getName() + " used a magic spell. Sizzle Oh NO!");
+				hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
+				EnemyTurn = true;
+				PlayerTurn = false;
+			}
+		});
+		EnemyTurn = true;
+	}
+
+	if (/*EnemyTurn &&*/ !PlayerTurn)
+	{
+		int enemyDamage = 5;/*enemy.attackCharacter(character);*/
+		character.takeDamage(enemyDamage);
+		infoText.setText(enemy.getName() + " just swong at you.");
+		hpText.setText("HP: " + std::to_string(character.getHP()));
+		PlayerTurn = true;
+		//EnemyTurn = false;
+	}
+	//}
 	Button returnMenu("returnMenu", font, "RETURN TO MENU", sf::Vector2f(250.0f, 50.0f), darkColor);
 	returnMenu.setPosition(sf::Vector2f(950, 650));
 
@@ -245,11 +275,13 @@ int main() {
 				if (counter == 0) {
 					handler.stackScene("scene02");
 					counter++;
+					StartFight = true;
 					ourWindow.clear();
 				}
 				else {
 					handler.popScene();
 					counter--;
+					StartFight = false;
 				}
 			}
 		}
@@ -258,9 +290,51 @@ int main() {
 		handler.render(ourWindow);
 		ourWindow.display();
 
-		if (battleWindowOpen && once) 
+		if (battleWindowOpen && once)
 		{
 			once = false;
 		}
 	}
+}
+
+void PlayerHandler(Button &attackButton, Character &character, Character &enemy, TextObject &hpTextEnemy, Button &defenceButton, TextObject &infoText, Button &recoverButton, TextObject &hpText, Button &magicButton, bool &specialMagic, bool &magicOnce, bool &EnemyTurn)
+{
+	attackButton.setButtonAction([&character, &enemy, &hpTextEnemy, &EnemyTurn]() {
+		int damage = character.attackCharacter(enemy);
+		enemy.takeDamage(damage);
+		hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
+		EnemyTurn = true;
+	});
+
+	defenceButton.setButtonAction([&character, &enemy, &infoText]() {
+		infoText.setText(character.getName() + " is bracing for impact.");
+	});
+
+	recoverButton.setButtonAction([&character, &enemy, &infoText, &hpText]() {
+		infoText.setText(character.getName() + " used a heal spell.");
+		character.setHP(5);
+		hpText.setText("HP: " + std::to_string(character.getHP()));
+	});
+
+	magicButton.setButtonAction([&character, &enemy, &infoText, &hpTextEnemy, &specialMagic, &magicOnce]() {
+		int damage = character.attackCharacterWithMagic(enemy);
+		int magicPower = rand() % 10 + 1;
+
+		if (magicPower >= 3)
+		{
+			infoText.setText(character.getName() + " used a magic spell. It Failed!");
+		}
+		else
+		{
+			specialMagic = true;
+			if (specialMagic && !magicOnce) {
+				enemy.takeMagicDamage(damage, specialMagic);
+				specialMagic = false;
+				magicOnce = true;
+			}
+			infoText.setText(character.getName() + " used a magic spell. Sizzle Oh NO!");
+			hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
+
+		}
+	});
 }
