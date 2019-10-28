@@ -6,6 +6,9 @@
 
 int main() {
 
+	srand(time(NULL));
+
+
 	int min = 1;
 	int max = 50;
 
