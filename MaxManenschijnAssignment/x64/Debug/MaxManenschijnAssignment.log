@@ -1,1 +1,3 @@
-﻿  MaxManenschijnAssignment.vcxproj -> D:\Saxion_CMGT_Map\Year2\GITSRC\C++Game\x64\Debug\MaxManenschijnAssignment.exe
+﻿  main.cpp
+d:\localsourcegit\c++game\maxmanenschijnassignment\main.cpp(9): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  MaxManenschijnAssignment.vcxproj -> D:\LocalSourceGit\C++Game\x64\Debug\MaxManenschijnAssignment.exe
