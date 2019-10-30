@@ -8,9 +8,8 @@ int main() {
 
 	srand(time(NULL));
 
-
-	int min = 1;
-	int max = 50;
+	int min = 10;
+	int max = 20;
 
 	bool battleWindowOpen = false;
 	bool once = false;
@@ -23,6 +22,8 @@ int main() {
 	bool reset = false;
 	bool initPlayer = true;
 	int enemysDefeated = 0;
+
+	std::vector<std::string> score;
 
 	sf::Font font;
 	font.loadFromFile("Lato-Regular.ttf");
@@ -69,6 +70,10 @@ int main() {
 
 	Character character("Hero", "img/player.png", 1, 0, 0);
 	Character enemy("Slime", "img/enemy.png", 8, 1, 4);
+
+	character.setAttack(rand() % 10 + 1);
+	character.setDefense(rand() % 10 + 1);
+	character.setHP(rand() % (max - min + 1) + min);
 
 	TextObject infoText("infoText", font, " ");
 	infoText.setPosition(sf::Vector2f(400, 400));
@@ -182,7 +187,7 @@ int main() {
 	handler.addScene(scene1);
 	handler.addScene(scene2);
 
-	std::ifstream myfileRead("character.txt");
+	/*std::ifstream myfileRead("character.txt");
 	if (!myfileRead.fail()) {
 		std::string line;
 
@@ -201,15 +206,17 @@ int main() {
 		character.setDefense(std::stoi(line));
 		defenceText.setText("DEFENSE: " + std::to_string(character.getDefense()));
 		myfileRead.close();
-	}
+	}*/
 
 	while (ourWindow.isOpen())
 	{
-		if (initPlayer) {
-			character.setAttack(rand() % 10 + 1);
-			character.setDefense(rand() % 10 + 1);
-			character.setHP(rand() % 10 + 1);
+		returnMenu.setButtonAction([&counter, &handler]() {
+			counter--;
+			handler.popScene();
+			std::cout << "Going Back" << " | " << counter;
+		});
 
+		if (initPlayer) {
 			hpText.setText("HP: " + std::to_string(character.getHP()));
 			attackText.setText("Attack: " + std::to_string(character.getAttack()));
 			defenceText.setText("Defence: " + std::to_string(character.getDefense()));
@@ -230,6 +237,7 @@ int main() {
 			infoTextEnemy.setText(enemy.getName() + " Is defeated! Click attack again to continue.");
 			reset = true;
 			enemysDefeated++;
+			score.push_back(std::to_string(enemysDefeated));
 		}
 
 		if (character.getHP() <= 0)
