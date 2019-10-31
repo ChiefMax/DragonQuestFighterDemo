@@ -24,6 +24,7 @@ int main() {
 	int enemysDefeated = 0;
 
 	std::vector<std::string> score;
+	std::vector<std::string> nameHighscore;
 
 	sf::Font font;
 	font.loadFromFile("Lato-Regular.ttf");
@@ -187,26 +188,17 @@ int main() {
 	handler.addScene(scene1);
 	handler.addScene(scene2);
 
-	/*std::ifstream myfileRead("character.txt");
+	std::ifstream myfileRead("character.txt");
 	if (!myfileRead.fail()) {
 		std::string line;
 
-		std::getline(myfileRead, line);
-		character.setName(line);
-
-		std::getline(myfileRead, line);
-		character.setHP(std::stoi(line));
-		hpText.setText("HP: " + std::to_string(character.getHP()));
-
-		std::getline(myfileRead, line);
-		character.setAttack(std::stoi(line));
-		attackText.setText("ATTACK: " + std::to_string(character.getAttack()));
-
-		std::getline(myfileRead, line);
-		character.setDefense(std::stoi(line));
-		defenceText.setText("DEFENSE: " + std::to_string(character.getDefense()));
+		while (std::getline(myfileRead, line)) 
+		{
+			//character.setName(line);
+			nameHighscore.push_back(line);
+		}
 		myfileRead.close();
-	}*/
+	}
 
 	while (ourWindow.isOpen())
 	{
