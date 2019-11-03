@@ -51,6 +51,13 @@ int main() {
 	quitSprite.setPosition(sf::Vector2f(1100.0f, 350.0f));
 	scene1.addGameObject(quitSprite);
 
+	TextObject highScoreTextInfo("highScoreTextInfo", font, " ");
+	highScoreTextInfo.setPosition(sf::Vector2f(50, 150));
+	highScoreTextInfo.setCharacterSize(26);
+	highScoreTextInfo.setFillColor(darkColor);
+	highScoreTextInfo.setText("HIGHSCORES:");
+	scene1.addGameObject(highScoreTextInfo);
+	
 	TextObject highScoreText1("highScoreText", font, " ");
 	highScoreText1.setPosition(sf::Vector2f(50, 200));
 	highScoreText1.setCharacterSize(26);
@@ -216,7 +223,7 @@ int main() {
 		}
 		elementCounter--;
 		std::string lineList = nameHighscore.at(elementCounter);
-		highScoreText1.setText(highScoreText1.getTextStr() + "HIGHSCORE: " + lineList + "\n");
+		highScoreText1.setText(highScoreText1.getTextStr() + lineList + " enemies." + "\n");
 		std::cout << "Test " << lineList << " \n";
 		continue;
 	}
@@ -276,9 +283,19 @@ int main() {
 				localinput.erase(localinput.end() - 1);
 			}
 
+			//Clearing the list so it does not go over the 5 limit.
+			std::ifstream myfileReadClear("highscore.cmgt", std::ofstream::out | std::ofstream::trunc);
+			myfileReadClear.close();
+
 			std::ofstream myfileRead("highscore.cmgt", std::fstream::app);
 			if (!myfileRead.fail()) {
-				
+				int counterForRemoving = localinput.size();
+				for (auto it = localinput.begin(); it != localinput.end(); ++it)
+				{
+					counterForRemoving--;
+					std::string toAppend = localinput.at(counterForRemoving);
+					myfileRead << toAppend << std::endl;
+				}
 				myfileRead << character.getName() + " has defeated: " + std::to_string(enemysDefeated) << std::endl;
 				myfileRead.flush();
 				myfileRead.close();
