@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>
 
 //void PlayerHandler(Button &attackButton, Character &character, Character &enemy, TextObject &hpTextEnemy, Button &defenceButton, TextObject &infoText, Button &recoverButton, TextObject &hpText, Button &magicButton, bool &specialMagic, bool &magicOnce, bool &EnemyTurn);
 
