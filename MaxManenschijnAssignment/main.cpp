@@ -21,6 +21,7 @@ int main() {
 	bool EnemyTurn = false;
 	bool reset = false;
 	bool initPlayer = true;
+	bool gameOver = false;
 	int enemysDefeated = 0;
 
 	std::vector<std::string> score;
@@ -49,6 +50,12 @@ int main() {
 	SpriteObject quitSprite("quitSprite", "img/exit.png");
 	quitSprite.setPosition(sf::Vector2f(1100.0f, 350.0f));
 	scene1.addGameObject(quitSprite);
+
+	TextObject highScoreText1("highScoreText", font, " ");
+	highScoreText1.setPosition(sf::Vector2f(50, 200));
+	highScoreText1.setCharacterSize(26);
+	highScoreText1.setFillColor(darkColor);
+	scene1.addGameObject(highScoreText1);
 
 	//Button handling.
 	sf::Texture playT;
@@ -188,16 +195,30 @@ int main() {
 	handler.addScene(scene1);
 	handler.addScene(scene2);
 
-	std::ifstream myfileRead("character.txt");
+	std::ifstream myfileRead("highscore.cmgt");
 	if (!myfileRead.fail()) {
 		std::string line;
 
 		while (std::getline(myfileRead, line)) 
 		{
-			//character.setName(line);
 			nameHighscore.push_back(line);
 		}
 		myfileRead.close();
+	}
+
+	int elementCounter = nameHighscore.size();
+	highScoreText1.setText("");
+	for (auto it = nameHighscore.begin(); it != nameHighscore.end(); ++it)
+	{
+		if (elementCounter < 0)
+		{
+			continue;
+		}
+		elementCounter--;
+		std::string lineList = nameHighscore.at(elementCounter);
+		highScoreText1.setText(highScoreText1.getTextStr() + "HIGHSCORE: " + lineList + "\n");
+		std::cout << "Test " << lineList << " \n";
+		continue;
 	}
 
 	while (ourWindow.isOpen())
@@ -224,7 +245,7 @@ int main() {
 			EnemyHandler(infoTextEnemy, enemy, PlayerTurn, EnemyTurn, character, hpText);
 		}
 
-		if (enemy.getHP() <= 0)
+		if (enemy.getHP() <= 0 && !reset)
 		{
 			infoTextEnemy.setText(enemy.getName() + " Is defeated! Click attack again to continue.");
 			reset = true;
@@ -232,9 +253,37 @@ int main() {
 			score.push_back(std::to_string(enemysDefeated));
 		}
 
-		if (character.getHP() <= 0)
+		if (character.getHP() <= 0 && !gameOver)
 		{
+			std::vector<std::string> localinput;
 			infoText.setText(character.getName() + " is defeated!");
+
+			std::ifstream myfileReadLocal("highscore.cmgt");
+			if (!myfileReadLocal.fail()) {
+				std::string line;
+
+				while (std::getline(myfileReadLocal, line))
+				{
+					localinput.push_back(line);
+				}
+				myfileReadLocal.close();
+			}
+
+			int counterLocal = localinput.size();
+
+			if (localinput.size() > 5) 
+			{
+				localinput.erase(localinput.end() - 1);
+			}
+
+			std::ofstream myfileRead("highscore.cmgt", std::fstream::app);
+			if (!myfileRead.fail()) {
+				
+				myfileRead << character.getName() + " has defeated: " + std::to_string(enemysDefeated) << std::endl;
+				myfileRead.flush();
+				myfileRead.close();
+			}
+			gameOver = true;
 		}
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -305,9 +354,9 @@ void PlayerHandler(Button &attackButton, Character &character, Character &enemy,
 		
 		if (reset)
 		{
-			enemy.setAttack(15);
-			enemy.setDefense(15);
-			enemy.setHP(15);
+			enemy.setAttack(rand() % 10 + 1);
+			enemy.setDefense(rand() % 10 + 1);
+			enemy.setHP(rand() % 10 + 1);
 			hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
 			attackTextEnemy.setText("Attack: " + std::to_string(enemy.getAttack()));
 			defenceTextEnemy.setText("Defence: " + std::to_string(enemy.getDefense()));

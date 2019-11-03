@@ -11,6 +11,7 @@ class TextObject : public GameObject {
         sf::Text text;
         std::string textStr;
         sf::Vector2f position;
+		sf::Vector2f size;
     public:
         TextObject(std::string identifier, sf::Font& font, std::string textStr);
         ~TextObject();
@@ -23,6 +24,7 @@ class TextObject : public GameObject {
         void setCharacterSize(const int size);
         void setFillColor(const sf::Color color);
         void setPosition(const sf::Vector2f position);
+		void setSize(const sf::Vector2f size);
 };
 
 

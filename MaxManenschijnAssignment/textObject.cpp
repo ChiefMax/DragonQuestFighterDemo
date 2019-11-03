@@ -36,3 +36,8 @@ void TextObject::setFillColor(const sf::Color color) {
 void TextObject::setPosition(const sf::Vector2f position) {
     this->text.setPosition(position);
 }
+
+void TextObject::setSize(const sf::Vector2f size) 
+{
+	this->text.setScale(size);
+}
