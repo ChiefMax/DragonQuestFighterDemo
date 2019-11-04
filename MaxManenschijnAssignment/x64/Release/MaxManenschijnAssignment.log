@@ -1,1 +1,18 @@
-﻿LINK : fatal error LNK1181: cannot open input file 'sfml-graphics-s.lib'
+﻿  button.cpp
+  character.cpp
+  fightscreen.cpp
+  gameObject.cpp
+  main.cpp
+d:\localsourcegit\c++game\maxmanenschijnassignment\main.cpp(9): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+d:\localsourcegit\c++game\maxmanenschijnassignment\main.cpp(216): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+d:\localsourcegit\c++game\maxmanenschijnassignment\main.cpp(279): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+d:\localsourcegit\c++game\maxmanenschijnassignment\main.cpp(292): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  quitButton.cpp
+  scene.cpp
+  sceneHandler.cpp
+  spriteObject.cpp
+  textObject.cpp
+  Generating code
+  All 885 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  MaxManenschijnAssignment.vcxproj -> D:\LocalSourceGit\C++Game\x64\Release\MaxManenschijnAssignment.exe
