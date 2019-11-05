@@ -32,6 +32,7 @@ int main() {
 	sf::Color darkColor = sf::Color(71, 82, 94, 255);
 	sf::Color darkGreyColor = sf::Color(132, 146, 166, 255);
 	sf::Color lightGreyColor = sf::Color(129, 144, 165, 255);
+	sf::Color AlphaColor = sf::Color(129, 144, 165, 0);
 
 	sf::RenderWindow ourWindow(sf::VideoMode(1280, 720), "Dronken Quest");
 	Scene scene1("scene01");
@@ -64,6 +65,12 @@ int main() {
 	highScoreText1.setFillColor(darkColor);
 	scene1.addGameObject(highScoreText1);
 
+	TextObject gameOverText("gameOverText", font, "");
+	gameOverText.setPosition(sf::Vector2f(550, 200));
+	gameOverText.setCharacterSize(26);
+	gameOverText.setFillColor(lightGreyColor);
+	scene1.addGameObject(gameOverText);
+
 	//Button handling.
 	sf::Texture playT;
 	sf::Texture eraseT;
@@ -84,7 +91,7 @@ int main() {
 	Scene scene2("scene02");
 
 	Character character("Hero", "img/player.png", 1, 0, 0);
-	Character enemy("Slime", "img/enemy.png", 8, 1, 4);
+	Character enemy("Slime", "img/enemy.png", 8, rand() % (10 - 5 + 1) + 5, 4);
 
 	character.setAttack(rand() % 10 + 1);
 	character.setDefense(rand() % 10 + 1);
@@ -212,6 +219,11 @@ int main() {
 		}
 		myfileRead.close();
 	}
+	else 
+	{
+		myfileRead.open("highscore.cmgt", std::fstream::in | std::fstream::out | std::fstream::app);
+		myfileRead.close();
+	}
 
 	int elementCounter = nameHighscore.size();
 	highScoreText1.setText("");
@@ -300,7 +312,30 @@ int main() {
 				myfileRead.flush();
 				myfileRead.close();
 			}
+
 			gameOver = true;
+
+			if (gameOver) 
+			{
+				counter--;
+				handler.popScene();
+				gameOverText.setText(character.getName() + " has been defeated.");
+			}
+
+			int elementCounterUpdate = localinput.size();
+			highScoreText1.setText("");
+			for (auto it = localinput.begin(); it != localinput.end(); ++it)
+			{
+				if (elementCounterUpdate < 0)
+				{
+					continue;
+				}
+				elementCounterUpdate--;
+				std::string lineList = localinput.at(elementCounterUpdate);
+				highScoreText1.setText(highScoreText1.getTextStr() + lineList + " enemies." + "\n");
+				std::cout << "Test " << lineList << " \n";
+				continue;
+			}
 		}
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -311,6 +346,7 @@ int main() {
 			// retrieve the bounding box of the sprite
 			sf::FloatRect boundsPlayButton = play.getGlobalBounds();
 			sf::FloatRect boundsQuitButton = quit.getGlobalBounds();
+			sf::FloatRect boundsEraseButton = erase.getGlobalBounds();
 
 			//Going to the next screen.
 			if (boundsPlayButton.contains(mouse))
@@ -320,6 +356,13 @@ int main() {
 				once = true;
 				fightWindowBool = true;
 				//counter++;
+			}
+
+			if (boundsEraseButton.contains(mouse)) 
+			{
+				std::ifstream myfileReadClearButton("highscore.cmgt", std::ofstream::out | std::ofstream::trunc);
+				myfileReadClearButton.close();
+				highScoreText1.setText("");
 			}
 
 			//Closing the game.
@@ -371,7 +414,7 @@ void PlayerHandler(Button &attackButton, Character &character, Character &enemy,
 		
 		if (reset)
 		{
-			enemy.setAttack(rand() % 10 + 1);
+			enemy.setAttack(rand() % (10 - 5 + 1) + 5);
 			enemy.setDefense(rand() % 10 + 1);
 			enemy.setHP(rand() % 10 + 1);
 			hpTextEnemy.setText("HP: " + std::to_string(enemy.getHP()));
